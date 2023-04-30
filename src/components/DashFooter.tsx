@@ -10,7 +10,11 @@ const DashFooter = () => {
 
   const goHomeButton =
     pathname !== '/dash' ? (
-      <button className="dash-footer__button icon-button" title="Home" onClick={onGoHomeClicked}>
+      <button
+        className="dash-footer__button icon-button"
+        title="Home"
+        onClick={onGoHomeClicked}
+      >
         <FontAwesomeIcon icon={faHouse} />
       </button>
     ) : null

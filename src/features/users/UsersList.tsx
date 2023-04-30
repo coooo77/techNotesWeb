@@ -1,19 +1,14 @@
 import User from './User'
 import { useGetUsersQuery } from './usersApiSlice'
 
-import type { SerializedError } from '@reduxjs/toolkit'
-import type { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import ErrorMsg from '../../components/ErrorMsg'
 
 const UsersList = () => {
   const { data: users, isLoading, isSuccess, isError, error } = useGetUsersQuery()
 
   if (isLoading) return <p>Loading...</p>
 
-  if (isError) {
-    const err = error as FetchBaseQueryError
-    const content = typeof err.status === 'number' ? err.status : err.error
-    return <p className="errMsg">{content}</p>
-  }
+  if (isError) return <ErrorMsg error={error} />
 
   if (isSuccess) {
     const { ids } = users

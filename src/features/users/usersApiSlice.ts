@@ -11,9 +11,18 @@ interface UserData {
   active: boolean
 }
 
+export enum ROLES {
+  Employee,
+  Manager,
+  Admin,
+}
+
+
 interface UserRes extends UserData {
   _id: string
 }
+
+type UserDataWithOptionalPassword = Omit<User, 'password'> & Partial<Pick<UserData, 'password'>>
 
 export interface User extends UserData {
   id: string
@@ -30,7 +39,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       // validateStatus: (response, result) => {
       //   return response.status === 200 && !result.error
       // },
-      keepUnusedDataFor: 5,
       transformResponse: (responseData: UserRes[]) => {
         const loadedUsers = responseData.map((user) => ({ ...user, id: user._id }))
         return usersAdapter.setAll(initialState, loadedUsers)
@@ -41,10 +49,41 @@ export const usersApiSlice = apiSlice.injectEndpoints({
           : [{ type: 'User' as const, id: 'LIST' }]
       },
     }),
+
+    addNewUser: builder.mutation<User, Omit<User, 'id' | 'active'>>({
+      query: (initialUserData) => ({
+        url: '/users',
+        method: 'POST',
+        body: {
+          ...initialUserData,
+        },
+      }),
+      invalidatesTags: [{ type: 'User', id: 'LIST' }],
+    }),
+
+    updateUser: builder.mutation<User, UserDataWithOptionalPassword>({
+      query: (initialUserData) => ({
+        url: '/users',
+        method: 'PATCH',
+        body: {
+          ...initialUserData,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'User', id: arg.id }],
+    }),
+
+    deleteUser: builder.mutation<void, { id: string }>({
+      query: ({ id }) => ({
+        url: `/users`,
+        method: 'DELETE',
+        body: { id },
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'User', id: arg.id }],
+    }),
   }),
 })
 
-export const { useGetUsersQuery } = usersApiSlice
+export const { useGetUsersQuery, useAddNewUserMutation, useUpdateUserMutation, useDeleteUserMutation } = usersApiSlice
 
 export const selectUsersResult = usersApiSlice.endpoints.getUsers.select()
 
