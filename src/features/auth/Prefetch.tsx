@@ -11,6 +11,7 @@ const Prefetch = () => {
     const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate())
 
     return () => {
+      /** @see https://redux-toolkit.js.org/rtk-query/usage/usage-without-react-hooks#removing-a-subscription */
       console.log('unsubscribing')
       notes.unsubscribe()
       users.unsubscribe()
