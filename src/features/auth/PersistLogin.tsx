@@ -6,6 +6,7 @@ import { useAppSelector } from '../../app/utils'
 import { selectCurrentToken } from './authSlice'
 import { useRefreshMutation } from './authApiSlice'
 
+import { PulseLoader } from 'react-spinners'
 import ErrorMsg from '../../components/ErrorMsg'
 
 const PersistLogin = () => {
@@ -48,7 +49,7 @@ const PersistLogin = () => {
   } else if (isLoading) {
     //persist: yes, token: no
     console.log('loading')
-    return <p>Loading...</p>
+    return <PulseLoader color={'#FFF'} />
   } else if (isError) {
     //persist: yes, token: no
     console.log('error')

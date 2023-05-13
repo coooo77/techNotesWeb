@@ -6,16 +6,8 @@ import { Outlet } from 'react-router-dom'
 
 const Prefetch = () => {
   useEffect(() => {
-    console.log('subscribing')
-    const notes = store.dispatch(notesApiSlice.endpoints.getNotes.initiate())
-    const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate())
-
-    return () => {
-      /** @see https://redux-toolkit.js.org/rtk-query/usage/usage-without-react-hooks#removing-a-subscription */
-      console.log('unsubscribing')
-      notes.unsubscribe()
-      users.unsubscribe()
-    }
+    store.dispatch(notesApiSlice.util.prefetch('getNotes', undefined, { force: true }))
+    store.dispatch(usersApiSlice.util.prefetch('getUsers', undefined, { force: true }))
   }, [])
 
   return <Outlet />

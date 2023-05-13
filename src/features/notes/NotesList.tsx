@@ -15,14 +15,14 @@ const NotesList = () => {
     isError,
     error,
   } = useGetNotesQuery(undefined, {
-    pollingInterval: 1000 * 15,
+    pollingInterval: 1000 * 60,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   })
 
   let content = null
 
-  if (isLoading) content = <p>Loading...</p>
+  if (isLoading) content = <PulseLoader color={'#FFF'} />
 
   if (isError) content = <ErrorMsg error={error} />
 

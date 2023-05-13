@@ -1,6 +1,7 @@
 import { createEntityAdapter, createSelector } from '@reduxjs/toolkit'
 import { apiSlice } from '../../app/api/apiSlice'
 
+import type { ErrorRes } from '../../types/common'
 import type { RootState } from '../../app/store'
 import type { EntityState } from '@reduxjs/toolkit'
 
@@ -36,10 +37,14 @@ const initialState = notesAdapter.getInitialState()
 export const notesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getNotes: builder.query<EntityState<Note>, void>({
-      query: () => '/notes',
-      // validateStatus: (response, result) => {
-      //   return response.status === 200 && !result.isError
-      // },
+      query: () => ({
+        url: '/notes',
+        validateStatus: (response: Response, result: NoteRes[] | ErrorRes) => {
+          const isFailed = response.status !== 200
+          const isError = !Array.isArray(result) && result.isError
+          return !(isFailed || isError)
+        },
+      }),
       transformResponse: (responseData: NoteRes[]) => {
         const loadedNotes = responseData.map((note) => ({ ...note, id: note._id }))
         return notesAdapter.setAll(initialState, loadedNotes)
@@ -73,7 +78,7 @@ export const notesApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: (result, error, arg) => [{ type: 'Note', id: arg.id }],
     }),
 
-    deleteNote: builder.mutation<void, {id: string}>({
+    deleteNote: builder.mutation<void, { id: string }>({
       query: ({ id }) => ({
         url: `/notes`,
         method: 'DELETE',

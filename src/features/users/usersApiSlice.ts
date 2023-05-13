@@ -1,6 +1,7 @@
 import { createEntityAdapter, createSelector } from '@reduxjs/toolkit'
 import { apiSlice } from '../../app/api/apiSlice'
 
+import type { ErrorRes } from '../../types/common'
 import type { RootState } from '../../app/store'
 import type { EntityState } from '@reduxjs/toolkit'
 
@@ -35,10 +36,14 @@ const initialState = usersAdapter.getInitialState()
 export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getUsers: builder.query<EntityState<User>, void>({
-      query: () => '/users',
-      // validateStatus: (response, result) => {
-      //   return response.status === 200 && !result.error
-      // },
+      query: () => ({
+        url: '/users',
+        validateStatus: (response: Response, result: UserRes[] | ErrorRes) => {
+          const isFailed = response.status !== 200
+          const isError = !Array.isArray(result) && result.isError
+          return !(isFailed || isError)
+        },
+      }),
       transformResponse: (responseData: UserRes[]) => {
         const loadedUsers = responseData.map((user) => ({ ...user, id: user._id }))
         return usersAdapter.setAll(initialState, loadedUsers)

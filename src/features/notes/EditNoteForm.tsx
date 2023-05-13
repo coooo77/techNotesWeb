@@ -130,7 +130,7 @@ const EditNoteForm = ({ note, users }: EditNoteFormProps) => {
         </label>
 
         <textarea className={`form__input form__input--text ${validTextClass}`} id="note-text" name="text" value={text} onChange={onTextChanged} />
-        
+
         <div className="form__row">
           <div className="form__divider">
             <label className="form__label form__checkbox-container" htmlFor="note-completed">

@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 
 import ErrorMsg from '../../components/ErrorMsg'
+import PulseLoader from 'react-spinners/PulseLoader'
 
 import { setCredentials } from './authSlice'
 import { useAppDispatch } from '../../app/utils'
@@ -63,7 +64,7 @@ const Login = () => {
 
   const errClass = errMsg ? 'errmsg' : 'offscreen'
 
-  if (isLoading) return <p>Loading...</p>
+  if (isLoading) return <PulseLoader color={'#FFF'} />
 
   return (
     <section className="public">

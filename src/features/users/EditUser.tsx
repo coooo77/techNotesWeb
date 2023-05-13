@@ -1,16 +1,25 @@
 import { useParams } from 'react-router-dom'
-import { selectUserById } from './usersApiSlice'
-import { useAppSelector } from '../../app/utils'
+
 import EditUserForm from './EditUserForm'
+import PulseLoader from 'react-spinners/PulseLoader'
+
+import useTitle from '../../hooks/useTitle'
+import { useGetUsersQuery } from './usersApiSlice'
 
 const EditUser = () => {
+  useTitle('techNotes: Edit User')
+
   const { id } = useParams()
 
-   if (typeof id !== 'string') return <p>No id available</p>
+  if (typeof id !== 'string') return <p>No id available</p>
 
-  const user = useAppSelector((state) => selectUserById(state, id))
+  const { user } = useGetUsersQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      user: data?.entities[id],
+    }),
+  })
 
-  const content = user ? <EditUserForm user={user} /> : <p>Loading...</p>
+  const content = user ? <EditUserForm user={user} /> : <PulseLoader color={'#FFF'} />
 
   return content
 }

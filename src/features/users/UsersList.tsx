@@ -2,6 +2,7 @@ import User from './User'
 import { useGetUsersQuery } from './usersApiSlice'
 
 import ErrorMsg from '../../components/ErrorMsg'
+import PulseLoader from 'react-spinners/PulseLoader'
 
 const UsersList = () => {
   const {
@@ -11,12 +12,12 @@ const UsersList = () => {
     isError,
     error,
   } = useGetUsersQuery(undefined, {
-    pollingInterval: 60000,
+    pollingInterval: 1000 * 60,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   })
 
-  if (isLoading) return <p>Loading...</p>
+  if (isLoading) return <PulseLoader color={'#FFF'} />
 
   if (isError) return <ErrorMsg error={error} />
 

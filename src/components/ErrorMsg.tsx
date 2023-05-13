@@ -9,7 +9,7 @@ interface ErrorMsgProps {
   customClass?: string
 }
 
-const ErrorMsg = forwardRef<HTMLParagraphElement, ErrorMsgProps>(({ error, customClass = 'errMsg', errorMsg = '' }, ref) => {
+const ErrorMsg = forwardRef<HTMLParagraphElement, ErrorMsgProps>(({ error, customClass = 'errmsg', errorMsg = '' }, ref) => {
   const err = error as FetchBaseQueryError | undefined
 
   if (errorMsg)
