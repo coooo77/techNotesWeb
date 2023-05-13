@@ -19,12 +19,7 @@ const ErrorMsg = forwardRef<HTMLParagraphElement, ErrorMsgProps>(({ error, custo
       </p>
     )
 
-  if (!err)
-    return (
-      <p ref={ref} className={customClass}>
-        undefined error
-      </p>
-    )
+  if (!err) return null
 
   if (err.data) {
     const { message } = err.data as { message: string }

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
-import { useUpdateNoteMutation, useDeleteNoteMutation } from './notesApiSlice'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+
+import useAuth from '../../hooks/useAuth'
+import { useUpdateNoteMutation, useDeleteNoteMutation } from './notesApiSlice'
 
 import ErrorMsg from '../../components/ErrorMsg'
 
@@ -15,6 +17,8 @@ interface EditNoteFormProps {
 }
 
 const EditNoteForm = ({ note, users }: EditNoteFormProps) => {
+  const { isManager, isAdmin } = useAuth()
+
   const [updateNote, { isLoading, isSuccess, isError, error }] = useUpdateNoteMutation()
 
   const [deleteNote, { isSuccess: isDelSuccess, isError: isDelError, error: delError }] = useDeleteNoteMutation()
@@ -81,29 +85,36 @@ const EditNoteForm = ({ note, users }: EditNoteFormProps) => {
   const validTitleClass = !title ? 'form__input--incomplete' : ''
   const validTextClass = !text ? 'form__input--incomplete' : ''
 
-  //   const errContent = (error?.data?.message || delError?.data?.message) ?? ''
   const errorTag = error ? <ErrorMsg error={error} customClass={errClass} /> : delError ? <ErrorMsg error={delError} customClass={errClass} /> : null
+
+  const deleteButton =
+    isManager || isAdmin ? (
+      <button className="icon-button" title="Delete" onClick={onDeleteNoteClicked}>
+        <FontAwesomeIcon icon={faTrashCan} />
+      </button>
+    ) : null
 
   const content = (
     <>
-      {/* <p className={errClass}>{errContent}</p> */}
       {errorTag}
 
       <form className="form" onSubmit={(e) => e.preventDefault()}>
         <div className="form__title-row">
           <h2>Edit Note #{note.ticket}</h2>
+
           <div className="form__action-buttons">
             <button className="icon-button" title="Save" onClick={onSaveNoteClicked} disabled={!canSave}>
               <FontAwesomeIcon icon={faSave} />
             </button>
-            <button className="icon-button" title="Delete" onClick={onDeleteNoteClicked}>
-              <FontAwesomeIcon icon={faTrashCan} />
-            </button>
+
+            {deleteButton}
           </div>
         </div>
+
         <label className="form__label" htmlFor="note-title">
           Title:
         </label>
+
         <input
           className={`form__input ${validTitleClass}`}
           id="note-title"
@@ -117,7 +128,9 @@ const EditNoteForm = ({ note, users }: EditNoteFormProps) => {
         <label className="form__label" htmlFor="note-text">
           Text:
         </label>
+
         <textarea className={`form__input form__input--text ${validTextClass}`} id="note-text" name="text" value={text} onChange={onTextChanged} />
+        
         <div className="form__row">
           <div className="form__divider">
             <label className="form__label form__checkbox-container" htmlFor="note-completed">

@@ -55,6 +55,7 @@ const PersistLogin = () => {
     return (
       <p className="errmsg">
         <ErrorMsg error={error} />
+        &nbsp;
         <Link to="/login">Please login again</Link>.
       </p>
     )

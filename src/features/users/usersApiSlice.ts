@@ -12,9 +12,9 @@ interface UserData {
 }
 
 export enum ROLES {
-  Employee,
-  Manager,
-  Admin,
+  Employee = 'Employee',
+  Manager = 'Manager',
+  Admin = 'Admin',
 }
 
 
